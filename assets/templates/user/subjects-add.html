@@ -1,0 +1,78 @@
+<div ng-controller="AddSubjectsController">
+<!-- BEGIN MAIN CONTENT -->
+    <div class="row">
+		<div class="col-md-12">
+			<!-- Begin add form -->
+            <div tabindex="-1">
+                
+                <div class="portlet box blue-madison">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-plus"></i>Add Subject
+						</div>
+						<div class="tools">
+							<a href="javascript:;" class=""></a>
+						</div>
+					</div>
+					<div class="portlet-body form">
+						<!-- BEGIN FORM-->
+						<form id="frmAdd" name="frmAdd" class="form-horizontal" onsubmit="return false">
+							<div class="form-body">
+								<!--h3 class="form-section">Advance validation. <small>Custom radio buttons, checkboxes and Select2 dropdowns</small></h3-->
+								<div class="alert alert-danger display-hide" id="validation_error">
+									<button class="close" data-close="alert"></button>
+                                    You have some form errors. Please check below.
+								</div>
+								<div class="alert alert-success display-hide" id="frm_add_msg">
+									<button class="close" data-close="alert"></button>
+                                    {{ success_msg }}
+								</div>
+                                <div class="form-group"></div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Subject Name <span class="required"> * </span> </label>
+                                    <div class="col-md-4">
+                                        <input type="text" ng-enter ng-model="add_fields.v_subject_name" data-error-message="Subject Name" name="v_subject_name" class="form-control required"/>
+                                    </div>
+                                </div>
+                                <!---<div class="form-group">
+                                    <label class="control-label col-md-3">User <span class="required"> * </span> </label>
+                                    <div class="col-md-4">
+                                        <select ng-model="add_fields.i_user_id" data-error-message="Customer" name="i_user_id" class="form-control required">
+                                            <option value="">Select User</option>
+                                            <option value="test">test</option>
+    										<option ng-repeat="(key, v_name) in add_fields.data.user_list" value="{{key}}">{{v_name}}</option>
+        								</select>
+                                    </div>
+                                </div>--->
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Status <span class="required"> * </span> </label>
+                                    <div class="col-md-4">
+                                       <select class="form-control bs-select add_e_status required select_msg" ng-model="add_fields.e_status" name="e_status" data-error-message="Status">
+											<option value="">Select Status</option>
+        									<option value="Active">Active</option>
+									        <option value="Inactive">Inactive</option>
+										</select>
+                                    </div>
+                                </div>
+                            </div>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-offset-3 col-md-9">
+										<button type="submit" class="btn blue-madison" ng-click="submit_frm_add(add_fields, 'Save')">Save</button>
+										<button type="button" class="btn default" ng-click="clearFormData()">Cancel</button>
+									</div>
+								</div>
+							</div>
+                        </form>
+                		<!-- END FORM-->
+					</div>
+					<!-- END VALIDATION STATES-->
+				</div>
+                        
+            </div>
+            <!-- End add form -->
+            
+		</div>
+	</div>
+<!-- END PAGE CONTENT-->
+</div>

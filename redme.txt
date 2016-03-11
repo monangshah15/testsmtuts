@@ -1,0 +1,9 @@
+1. ../db
+	Import Database 
+
+../smarttuts/admin --- Admin Path
+../smarttuts -- User Path
+
+2. Fees Section Not Done yet, I need to discuss with you on the same. 
+3. Note: If there is any bug.
+4. Logo image for any user have one issue which need to fix, i try but..

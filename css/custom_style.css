@@ -1,0 +1,52 @@
+
+/* For news letter in footer section */
+.subscription_msg{
+    margin-top: 10px;
+    margin-left: 2px;
+    color: #6aab42;
+    font-weight: bold;
+}
+.error-exist{display: none;color: red;font-size: 12px;}
+.error-inner { font-size: 12px; color: red;}
+.email-error { font-size: 12px; color: red;}
+.greenMsg{ font-size: 12px; color:green;}
+.greenMsgLarge{ font-size: 14px; color:green;}
+.redMsgLarge{ font-size: 16px; color:red;}
+#free_quote .error-inner,#free_quote .error-exist {
+    margin-bottom: 15px;
+    margin-top: -10px;
+}
+#feedback_form .error-inner {
+    margin-bottom: 15px;
+    margin-top: -10px;
+}
+#support_form ul li .captcha{
+    margin:0 0 14px;
+}
+#support_form ul li .error-inner, #support_form ul li .error-exist {
+    bottom: -17px;
+    color: rgb(255, 0, 0);
+    font-size: 12px;
+    font-weight: normal;
+    left: 0;
+    position: absolute;
+}
+.pics a img {
+    height: 200px;
+    width: 200px;
+}
+.support_page form ul li.info_para{
+    clear: both;
+    color: rgb(123, 123, 123);
+    font-family: "Open Sans",sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    line-height: 20px;
+    margin: 0 0  20px;
+    padding: 3px 0 0;
+    text-align: left;
+}
+
+@media only screen and (min-width:768px) and (max-width: 1024px) {
+	header .container, #content .container{ width:100% !important;}	
+}

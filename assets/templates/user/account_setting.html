@@ -1,0 +1,142 @@
+<div ng-controller="UsersAccountSettingController">
+<!-- BEGIN MAIN CONTENT -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="portlet box blue-madison">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-user"></i>Edit Account Setting
+                    </div>
+                </div>
+                <div class="portlet-body form">
+					<!-- BEGIN FORM-->
+					<form id="frmEdit" name="frmEdit" class="form-horizontal" onsubmit="return false">
+						<div class="form-body">
+							<!--h3 class="form-section">Advance validation. <small>Custom radio buttons, checkboxes and Select2 dropdowns</small></h3-->
+							<div class="alert alert-danger display-hide" id="validation_error">
+								<button class="close" data-close="alert"></button>
+								You have some form errors. Please check below.
+							</div>
+							<div class="alert alert-success display-hide">
+								<button class="close" data-close="alert"></button>
+								Your data has been update successfully.
+							</div>
+                            <div class="form-group"></div>
+							<div class="form-group">
+								<label class="control-label col-md-3">Name <span class="required"> * </span> </label>
+								<div class="col-md-4">
+									<input type="text" ng-enter ng-model="edit_fields.v_name" name="v_name" data-error-message="Name" class="form-control required"/>
+								</div>
+							</div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">E-Mail <span class="required"> * </span> </label>
+                                <div class="col-md-4">
+                                    <input type="text" ng-enter ng-model="edit_fields.v_email" id="email" name="email" data-error-message="email" class="form-control required email"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Password <br /><span style="font-size: 11px; color: red;">(Note: Password will be updated if entered) </label>
+                                <div class="col-md-4">
+                                    <input type="password" ng-model="items.v_password" ng-enter name="v_password" id="v_password" data-error-message="password" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Confirm Password </label>
+                                <div class="col-md-4">
+                                    <input type="password" ng-enter name="cpassword" data-error-message="confirm password" equalTo="#v_password" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+								<label class="control-label col-md-3">Phone Number <span class="required"> * </span></label>
+								<div class="col-md-4">
+									<input type="text" ng-enter ng-model="edit_fields.v_phone" name="v_phone" data-error-message="Company Address" class="form-control required"/>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label class="control-label col-md-3">Company Name <span class="required"> * </span> </label>
+								<div class="col-md-4">
+									<input type="text" ng-enter ng-model="edit_fields.v_company_name" name="v_company_name" data-error-message="Company Name" class="form-control required"/>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label class="control-label col-md-3">Company Email Address <span class="required"> * </span> </label>
+								<div class="col-md-4">
+									<input type="text" ng-enter ng-model="edit_fields.v_company_email" name="v_company_email" data-error-message="Company Email Address" class="form-control required email"/>
+								</div>
+							</div>
+                            <div class="form-group">
+								<label class="control-label col-md-3">Company Address</label>
+								<div class="col-md-4">
+									<input type="text" ng-enter ng-model="edit_fields.v_company_address" name="v_company_address" data-error-message="Company Address" class="form-control"/>
+								</div>
+							</div>
+                            
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Message/Email Signature</label>
+                                <div class="col-md-3">
+                                    <textarea ng-enter ng-model="edit_fields.v_user_signature" name="v_user_signature" data-error-message="Signature" class="form-control required"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3" for="inputWarning">Company Logo</label>
+                                <div class="col-md-9">
+                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                        <div ng-class="enableCrop == false ? 'fileinput-new thumbnail ng-show' : 'fileinput-new thumbnail ng-hide'" class="fileinput-new thumbnail" style="width: 200px; height: 150px;" ng-show="enableCrop == false">
+                                            <img src="{{ GLOBAL.SITE_URL+'img/no_image.png' }}" alt="" />
+                                        </div>
+                                        <!--div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div-->
+                                        <div ng-if="enableCrop" class="cropArea thumbnail" ng-class="{'big':size=='big', 'medium':size=='medium', 'small':size=='small'}" ng-show="enableCrop == true">
+                                            <img-crop image="imageDataURI"
+                                                      result-image="$parent.resImageDataURI"
+                                                      change-on-fly="changeOnFly"
+                                                      area-type="{{type}}"
+                                                      area-min-size="selMinSize"
+                                                      result-image-format="{{resImgFormat}}"
+                                                      result-image-quality="resImgQuality"
+                                                      result-image-size="resImgSize"
+                                                      on-change="onChange($dataURI)"
+                                                      on-load-begin="onLoadBegin()"
+                                                      on-load-done="onLoadDone()"
+                                                      on-load-error="onLoadError()"
+                                            ></img-crop>
+                                            
+                                            <input type="hidden" name="v_img" id="full-image-element" value="{{ imageDataURI }}" />
+                                            <input type="hidden" name="v_img_thumb" id="crop-image-element" value="{{ resImageDataURI }}"/>                                                 
+                                        </div>
+                                        
+                                        <div>
+                                            <span class="btn default btn-file" ng-click="trigger('#fileInput')">
+                                                <div ng-class="enableCrop == false ? 'fileinput-new ng-show-inline-block' : 'fileinput-new ng-hide'" ng-show="enableCrop == false" >Select image</div>
+                                                <span ng-class="enableCrop == true ? 'fileinput-exists ng-show-inline-block' : 'fileinput-exists ng-hide'" ng-if="enableCrop"> Change </span>
+                                            </span>
+                                            <a href="javascript:;" ng-class="enableCrop == true ? 'btn default fileinput-exists  ng-show-inline-block' : 'btn default fileinput-exists ng-hide'" data-dismiss="fileinput" ng-click="removeImage()" ng-if="enableCrop" > Remove </a>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix margin-top-10">
+                                        <span class="label label-danger">NOTE! </span>
+                                        <span>&nbsp;&nbsp;Attached image thumbnail is supported in the latest Firefox, Chrome, Opera, Safari and Internet 10 - Edge browsers.</span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+						<div class="form-actions">
+							<div class="row">
+								<div class="col-md-offset-3 col-md-9">
+									<button type="submit" class="btn blue-madison" ng-click="submit_frm_edit(edit_fields)">Submit</button>
+                                     <button ui-sref="/dashboard" class="btn default " type="button">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</form>
+                    <form id="form_name" action="{{ getSrc('api/employee/upload-for-ie'); }}" method="post" enctype="multipart/form-data">
+                            <input type="file" name="file_upload" id="fileInput" style="display: none;" />
+                    </form>
+                    
+                        
+					<!-- END FORM-->
+				</div>
+            </div>
+        </div>
+    </div>
+</div>

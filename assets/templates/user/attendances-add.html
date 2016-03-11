@@ -1,0 +1,124 @@
+<script type="text/javascript">
+	var t;
+	$(document).ready(function()
+    {       
+        window.clearTimeout(t);
+        t = window.setTimeout( function(){            
+            $('#d_date').datepicker({format: 'dd-mm-yyyy'});
+        },10);        
+    });
+</script>
+<div ng-controller="AddAttendancesController">
+<!-- BEGIN MAIN CONTENT -->
+    <div class="row">
+		<div class="col-md-12">
+			<!-- Begin add form -->
+            <div tabindex="-1">
+                
+                <div class="portlet box blue-madison">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-plus"></i>Add Attendances
+						</div>
+						<div class="tools">
+							<a href="javascript:;" class=""></a>
+						</div>
+					</div>
+					<div class="portlet-body form">
+						<!-- BEGIN FORM-->
+						<form id="frmAdd" name="frmAdd" class="form-horizontal" onsubmit="return false">
+							<div class="form-body">
+								<!--h3 class="form-section">Advance validation. <small>Custom radio buttons, checkboxes and Select2 dropdowns</small></h3-->
+								<div class="alert alert-danger display-hide" id="validation_error">
+									<button class="close" data-close="alert"></button>
+                                    You have some form errors. Please check below.
+								</div>
+								<div class="alert alert-success display-hide" id="frm_add_msg">
+									<button class="close" data-close="alert"></button>
+                                    {{ success_msg }}
+								</div>
+                                <div class="form-group"></div>
+                                
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Batch<span class="required"> * </span> </label>
+                                    <div class="col-md-4">
+                                        <select ng-model="add_fields.i_batch_id" data-error-message="Batch" name="i_batch_id" class="form-control required select_msg">
+                                            <option value="">Select Batch</option>
+                                            <option ng-repeat="(key, v_name) in batches_list" value="{{key}}">{{v_name}}</option>
+        								</select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Date <span class="required"> * </span> </label>
+                                    <div class="col-md-4">
+                                        <input type="text" ng-enter ng-model="add_fields.d_date" data-error-message="Date" name="d_date" id="d_date" class="form-control required" value=""/>
+                                        <!---{{currentDate() | date:'dd-MM-yyyy'}}-->
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Template<span class="required"> * </span> </label>
+                                    <div class="col-md-4">
+                                        <select ng-model="add_fields.i_template_id" data-error-message="Template" name="i_template_id" class="form-control required select_msg" ng-change="getTemplateContent(add_fields.i_template_id)">
+                                            <option value="">Select Template</option>
+                                            <option ng-repeat="template in templates_list" value="{{template.id}}" >{{template.v_template_title}}</option>
+        								</select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Templete Description</label>
+                                    <div class="col-md-6">
+                                        <textarea class="form-control" ng-enter ng-model="add_fields.v_template_content" readonly=""></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3" id="customer-label">
+                                        Students <span class="required"> * </span> 
+                                    </label>
+                                    <div class="col-md-6 sales-list-parent" ng-show="add_fields.i_batch_id">
+                                        <div class="sales-list" ng-repeat="student in students_list | filter:{i_batch_id : add_fields.i_batch_id}">
+                                            <label>
+                                                <input type="checkbox" class="checkboxes student_chk" name="student_ids[]" value="{{ student.id }}" ng-model="active_chk" ng-change="selectStudent(student.id,active_chk)"/> {{student.v_name}}
+                                            </label>
+                                        </div>
+                                        <p ng-show="(students_list|filter:{i_batch_id : add_fields.i_batch_id}).length === 0" class="form-control-static font-red-sunglo bold">No student found.</p>
+    								</div>
+                                    <div class="col-md-6" ng-hide="add_fields.i_batch_id">
+                                        <p class="form-control-static font-red-sunglo bold">Please select batch.</p> 
+                                    </div>
+                                </div>
+                                 <div class="form-group" ng-show="add_fields.i_batch_id && (students_list|filter:{i_batch_id : add_fields.i_batch_id}).length > 0">
+                                    <label class="control-label col-md-3">
+                                        &nbsp; 
+                                    </label>
+                                    <div class="col-md-6">
+                                        <div class="sales-list">
+                                            <label>
+                                            <input type="checkbox" ng-model="selectedAll" class="group-checkable" ng-change="check_all_student()" data-set="#sample_1 .checkboxes" /> Select all</label>
+                                        </div>
+    								</div>
+                                 </div>
+                            </div>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-offset-3 col-md-9">
+										<button type="submit" class="btn blue-madison" ng-click="submit_frm_add(add_fields, 'Save')">Save</button>
+                                        <button type="submit" class="btn blue-madison" ng-click="submit_frm_add(add_fields, 'New')">Save & New</button>
+										<button type="button" class="btn default" ng-click="clearFormData()">Cancel</button>
+									</div>
+								</div>
+							</div>
+						</form>
+                        <!-- END FORM-->
+					</div>
+					<!-- END VALIDATION STATES-->
+				</div>
+                        
+            </div>
+            <!-- End add form -->
+            
+		</div>
+	</div>
+<!-- END PAGE CONTENT-->
+</div>

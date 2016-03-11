@@ -1,0 +1,7 @@
+ATT - Home,Add,Edit
+STUD - Home,Add,Edit
+News - Home,add,Edit
+Exam - Home,add,edit
+
+
+ALTER TABLE `tbl_marks` CHANGE `i_subject_id` `i_exam_id` INT(11) NULL DEFAULT NULL;
