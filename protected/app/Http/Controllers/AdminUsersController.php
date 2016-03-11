@@ -48,7 +48,6 @@ class AdminUsersController extends Controller
         $arrUser = $user->toArray();
         $results = [
     	    'items' => $arrUser['data'],
-            'e_permission_type' => Auth::user()->get(),
             '_meta' => [
     	        'total'   => $arrUser['total'],
     	        'rpp'     => $arrUser['per_page'],
@@ -106,31 +105,29 @@ class AdminUsersController extends Controller
         if(!empty($data)){
             $code = str_random(10);
             $v_encryption_id = customEncrypt(str_random(2).time().str_random(2));
-            $v_db_name = 'monangsh_'.$v_encryption_id;
+            $v_db_name = 'db_'.$v_encryption_id;
             $v_db_host = DB_HOST;
             $v_db_user = DB_USER;
             $v_db_password = DB_PASSWORD;
             
             // generate new database with respect to company
             $strSql="CREATE DATABASE ".$v_db_name;
-            //DB::statement($strSql); 
+            DB::statement($strSql); 
             
             // get all the table which we need to create
-            //$tables = DB::select(DB::raw('SHOW TABLES'));
+            $tables = DB::select(DB::raw('SHOW TABLES'));
             
-            /*foreach($tables as $value) {
-                if(current($value) == "tbl_templates" || current($value) == "tbl_administrators")
+            foreach($tables as $value) {
+                if(current($value) != "tbl_administrators")
                 {
-                    //   
-                } else {
-                   $aTables[] = current($value); 
+                    $aTables[] = current($value);
                 }
             }
             $i = 0;
             $aFields = array();
             // get the fields with respect to database
             foreach ($aTables as $table) {
-                //$desc = DB::select(DB::raw("describe " . $table));
+                $desc = DB::select(DB::raw("describe " . $table));
                 foreach($desc as $key => $row)
                 {
                     $aFields[$i][] = array($row->Field,$row->Type,$row->Null,$row->Key,$row->Default,$row->Extra);   
@@ -150,7 +147,7 @@ class AdminUsersController extends Controller
             ));
             
             // create duplicate database into mysql
-            //$con = DB::connection($v_db_name);
+            $con = DB::connection($v_db_name);
             for ($i = 0; $i < count($aTables); $i++) 
             {
                 $insert_column = "";
@@ -171,9 +168,9 @@ class AdminUsersController extends Controller
                 $insert_column = $insert_column.$add_primary_key;
                 
                 $query = "CREATE TABLE IF NOT EXISTS $aTables[$i]($insert_column)";
-                //$con->statement($query);
+                $con->statement($query);
                 $query = "";
-                //$result = DB::select(DB::raw("SELECT * FROM $aTables[$i]"));
+                $result = DB::select(DB::raw("SELECT * FROM $aTables[$i]"));
                 
                 if(!empty($result) && count($result) > 0)
                 {
@@ -198,9 +195,9 @@ class AdminUsersController extends Controller
                         $query .= '),';
                     }
                     $query = rtrim($query,',');
-                    //$con->statement($query);
+                    $con->statement($query);
                 }
-            }*/
+            }
             $companyDirectory = File::makeDirectory(TEMP_IMG_PATH.'company-'.$v_encryption_id, 0777, true, true);
             $companyThumbDirectory = File::makeDirectory(TEMP_IMG_PATH.'company-'.$v_encryption_id.'/'.'thumb', 0777, true, true);
             $v_image = '';
@@ -243,17 +240,19 @@ class AdminUsersController extends Controller
                 'v_name' => e(trim(Input::get('v_name'))),
                 'v_username' => $v_username,
                 'v_email' => $v_email,
-                'password' => Hash::make($str_random),
+                'password' => Hash::make(e(trim(Input::get('v_password')))),
                 'e_type' => 'Simple',
                 'e_status' => e(trim(Input::get('e_status'))), 
-                'd_registration_date' => date('Y-m-d H:i:s'),
+                'd_registration_date' => date('Y-m-d',strtotime(Input::get('d_registration_date'))),
                 'i_default_sms_count' => e(trim(Input::get('i_default_sms_count'))),
                 'v_company_name' => e(trim(Input::get('v_company_name'))),
                 'v_company_email' => e(trim(Input::get('v_company_email'))),
                 'v_phone' => e(trim(Input::get('v_phone'))),
+                'v_whatsapp_number' => e(trim(Input::get('v_whatsapp_number'))),
                 'v_company_alias' => e(trim(Input::get('v_company_alias'))),
                 'v_company_address' => e(trim(Input::get('v_company_address'))),
                 'v_regards_name' => e(trim(Input::get('v_regards_name'))),
+                'f_prize' => Input::get('f_prize'),
                 'v_company_logo' => $v_image,
                 'v_auth_key' => $v_encryption_id,
                 'v_encryption_id' => $v_encryption_id,
@@ -333,17 +332,23 @@ class AdminUsersController extends Controller
             $dateField = array('created_at','updated_at');
             if(isset($data['v_password']) && $data['v_password'] != '')
             {
-                $user->v_txt_password = $data['v_password'];
-                $user->password = Hash::make($data['v_password']);
+                //$user->v_txt_password = $data['v_password'];
+                $record->password = Hash::make($data['v_password']);
                 $passFlag = 1;
             }
             $record->v_name = $data['v_name'];
             $record->v_email = $data['v_email'];
             $record->v_username = $data['v_username'];
+            $record->v_regards_name = $data['v_regards_name'];
+            $record->f_prize = $data['f_prize'];
             $record->v_phone = $data['v_phone'];
+            if(isset($data['v_whatsapp_number'])){
+                $record->v_whatsapp_number = isset($data['v_whatsapp_number']);    
+            }
             $record->e_status = $data['e_status'];
             $record->i_default_sms_count = $data['i_default_sms_count'];
             $record->v_company_name = $data['v_company_name'];
+            $record->d_payment_due_date = date('Y-m-d',strtotime($data['d_payment_due_date']));
             $record->v_regards_name = $data['v_regards_name'];
             $record->v_company_address = $data['v_company_address'];
             $record->v_company_email = $data['v_company_email'];
@@ -443,9 +448,9 @@ class AdminUsersController extends Controller
             $success = File::deleteDirectory(TEMP_IMG_PATH.'company-'.$objGetCompany->v_auth_key);
             $objGetCompany->delete();
             $this->otherDBConnection($objGetCompany->v_db_host,$objGetCompany->v_db_name,$objGetCompany->v_db_user,$objGetCompany->v_db_password);                                                                                                 
-            //$con = DB::connection($objGetCompany->v_db_name);
+            $con = DB::connection($objGetCompany->v_db_name);
             $strSql="DROP DATABASE ".$objGetCompany->v_db_name;
-            //$con->statement($strSql);
+            $con->statement($strSql);
             return 'TRUE';    
         }
     }
@@ -481,9 +486,9 @@ class AdminUsersController extends Controller
                         $success = File::deleteDirectory(TEMP_IMG_PATH.'company-'.$objGetCompany->v_auth_key);
                         $objGetCompany->delete();
                         $this->otherDBConnection($objGetCompany->v_db_host,$objGetCompany->v_db_name,$objGetCompany->v_db_user,$objGetCompany->v_db_password);                                                                                                 
-                        //$con = DB::connection($objGetCompany->v_db_name);
+                        $con = DB::connection($objGetCompany->v_db_name);
                         $strSql="DROP DATABASE ".$objGetCompany->v_db_name;
-                        //$con->statement($strSql);    
+                        $con->statement($strSql);    
                     }
                 }
                 echo "Delete";  
@@ -588,20 +593,6 @@ class AdminUsersController extends Controller
             });
         
         })->download('xls');
-    }
-    
-    public function get_status_list()
-    {
-        if(Auth::check())
-        {
-            $status_list = array('1'=> 'Active12','2'=>'Inactive12');
-            $results = [
-        	    'status_list' => $status_list,
-            ];
-            return $results;
-        } else {
-            return json_encode(array());
-        }
     }
     
 }

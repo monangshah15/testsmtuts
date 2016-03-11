@@ -45,6 +45,7 @@ Route::group(['prefix' => API_ADMIN_NAME, 'middleware' => 'auth'],function(){
     /*Route::any('/setting',array('uses' => 'AdminSettingController@setting'));
     Route::any('/edit_setting',array('uses' => 'AdminSettingController@edit_setting'));
     Route::any('/setting/upload_img',array('uses' => 'AdminSettingController@anyUploadImg'));*/
+    Route::any('/user_login{id}',array('uses' => 'UserAuthenticateController@anyUserLogin'));
     Route::any('/get_status_list',array('uses' => 'AdminUsersController@get_status_list'));
     Route::any('/dashboard-count',array('uses' => 'AdminAuthenticateController@dashboard_count'));
     Route::controller('users', 'AdminUsersController');

@@ -2,10 +2,7 @@
 namespace App\Http\Controllers;
 
 use Session, Input, Auth, Hash, Excel, DB;
-use App\Models\Batch;
-use App\Models\Mark;
-use App\Models\Subject;
-use App\Models\Student;
+use App\Models\Batch, App\Models\Mark, App\Models\Subject, App\Models\Student, App\Models\Exam, App\Models\SmsLog;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 class MarksController extends Controller 
@@ -212,7 +209,18 @@ class MarksController extends Controller
 	    $data = Input::get();
         $data['marksInput'] = array_filter($data['marksInput']);
         if(!empty($data) && isset($data['i_student_ids'])){
-            $students = Student::where('e_status','Active')->where('i_batch_id',$data['i_batch_id'])->select('id', DB::raw('CONCAT(v_first_Name, " ", v_last_Name) AS v_student_name'))->orderBy('v_student_name','ASC')->get();
+            $students = Student::where('e_status','Active')->where('i_batch_id',$data['i_batch_id'])->select('id', DB::raw('CONCAT(v_first_Name, " ", v_last_Name) AS v_student_name, v_mobile_number, v_whatsapp_number, e_sms_type'))->orderBy('v_student_name','ASC')->get();
+            $exam = Exam::where('i_batch_id', $data['i_batch_id'])->with('subjects')->first();
+            $examDate = date('d-m-Y',strtotime($exam->d_date));
+            $subjectName = isset($exam->subjects->v_subject_name) ? $exam->subjects->v_subject_name: '';
+            $totalmarks = $data['i_total_marks'];
+            
+            $strTemplate = $data['v_template_content'];//DATE
+            $strTemplate = str_replace('[SUBJECT]',$subjectName,$strTemplate);//SUBJECT
+            $strTemplate = str_replace('[TOTAL_MARKS]',$totalmarks,$strTemplate);//Total Marks
+            $strTemplate = str_replace('[DATE]',$examDate,$strTemplate);//OBTAINED_MARKS   //TOTAL_MARKS
+            $strTemplate = str_replace('[SIGNATURE]',$companyData->v_user_signature,$strTemplate);//OBTAINED_MARKS   //TOTAL_MARKS
+            
             foreach($students as $key=> $val)
             {
                 $record = Mark::where('i_batch_id',$data['i_batch_id'])->where('i_student_id',$val->id)->where('i_exam_id',$data['i_exam_id'])->first();
@@ -233,8 +241,19 @@ class MarksController extends Controller
                 }                   
                 $record->e_send_message = 'Yes';
                 $record->created_at = date("Y-m-d H:i:s");
-                $record->updated_at = date("Y-m-d H:i:s");
                 $record->save();
+                
+                $strTemplate = str_replace('[OBTAINED_MARKS]',$record->i_mark_obtained,$strTemplate);//Marks Obtained
+                $smsLog = new SmsLog;
+                $smsLog->i_user_id = $companyData->id;      
+                $smsLog->i_student_id = $val->id;
+                $smsLog->v_phone_number = $val->v_mobile_number;
+                $smsLog->v_whatsapp_number = $val->v_whatsapp_number;
+                $smsLog->v_message = $strTemplate;
+                $smsLog->e_sms_type = $val->e_sms_type == 'Whatsapp'? $val->e_sms_type:$companyData->e_messages_type;
+                $smsLog->d_registration_date = date('Y-m-d',strtotime($companyData->d_registration_date));
+                $smsLog->created_at = date("Y-m-d H:i:s");
+                $smsLog->save();
             }
             return 'TRUE';
         }        
@@ -278,7 +297,7 @@ class MarksController extends Controller
         }
         return "TRUE";
     }
-    public function anyMarkDelete()
+    public function anyMarksDelete()
     {
         $companyData = Auth::user();
         $this->dynamic_db_connection($companyData);

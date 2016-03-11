@@ -444,7 +444,6 @@ app.controller('AddExamsController', function($rootScope, $scope, $http, $timeou
                 angular.element('.alert-success').fadeIn(1000);
                 angular.element('.alert-success').fadeOut(2000);
                 angular.element('.select2me').select2('val', '');
-                angular.element('#cpassword').val('');
                 angular.element('.alert').hide();
             },500);
         } else {           

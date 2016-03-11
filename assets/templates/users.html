@@ -71,7 +71,7 @@
                               <input type="checkbox"  ng-model="selected_record[0]" class="group-checkable" ng-change="check_all(selected_record[0],false)" data-set="#sample_1 .checkboxes" />
                             </th>
                             <th width="20%" ng-class="order_field != 'v_name' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_name')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
-								Name
+								Name / Username
 							</th>
                             
                             <th width="20%" ng-class="order_field != 'v_company_name' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_company_name')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
@@ -134,7 +134,7 @@
                                 <td>
                                   <input type="checkbox"  ng-model="selected_record[item.id]"  ng-click="enable_button()"   class="checkboxes" value="1" />
                                 </td>
-                                <td>{{ item.v_name }}</td>                               
+                                <td>{{ item.v_name }}<br/>{{ item.v_username }}</td>                               
                                 <td>{{ item.v_company_name }}</td>
                                 <td>{{ item.v_email }}</td>
                                 <td>{{ item.e_messages_type }}</td>
@@ -145,7 +145,7 @@
                                 <td>
                                     <a class="btn btn-xs default" ng-click="loadEditData(item)" ><i class="fa fa-edit"></i> Edit </a> 
                                     <a class="btn btn-xs default" ng-click="delete_btn(item.id);"  href="javascript:void(0);"><i class="fa fa-remove"></i> Delete </a>
-                                    <a ng-show="item.e_type == 'User'" class="btn btn-xs default" href="{{ GLOBAL.ADMIN_URL+'consignments/'+item.id}}"><i class="fa fa-eye"></i> View Consignments </a> 
+                                    <a class="btn btn-xs default" target="_blank" href="{{ GLOBAL.SITE_URL+'user_login/'+item.id}}"><i class="fa fa-eye"></i> Login To User </a> 
                                 </td>
                             </tr>
                             <tfoot ng-show="data_loading == false && items.length <= 0">

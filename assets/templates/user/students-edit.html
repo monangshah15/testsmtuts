@@ -42,13 +42,6 @@
                                         <input type="text" ng-enter ng-model="edit_fields.v_last_name" data-error-message="Last Name" name="v_last_name" class="form-control required"/>
                                     </div>
                                 </div>
-                                <!--<div class="form-group">
-                                    <label class="control-label col-md-3">Username <span class="required"> * </span> </label>
-                                    <div class="col-md-4">
-                                        <input type="text" ng-enter ng-model="edit_fields.v_username" data-error-message="Username" name="v_username" class="form-control required"/>
-                                        <span class="duplicate_error temp_hid" id="v_username_duplicate_error">Username already exist.</span>
-                                    </div>
-                                </div>--->
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Email ID <span class="required"> * </span> </label>
                                     <div class="col-md-4">
@@ -83,12 +76,37 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+									<label class="control-label col-md-3">Message Type<span class="required"> * </span> </label>
+									<div class="col-md-4">
+										<select class="form-control bs-select add_e_status required select_msg" ng-model="edit_fields.e_sms_type" name="e_sms_type" data-error-message="Message Type">
+											<option value="">Select Message Type</option>
+                                            <option value="Whatsapp">Whatsapp</option>
+                                            <option value="Sms">Sms</option>
+										</select>
+									</div>
+								</div>
+                                <div class="form-group">
                                     <label class="control-label col-md-3">Parent's Mobile Number <span class="required"> * </span> </label>
                                     <div class="col-md-4">
-                                        <input type="text" ng-enter ng-model="edit_fields.v_mobile_number" data-error-message="Parent's Mobile Number" name="v_mobile_number" class="form-control required"/>
+                                        <div class="input-group">
+											<span class="input-group-addon">
+											<i class="">+91</i>
+											</span>
+                                            <input id="phone_number" type="text" ng-enter ng-model="edit_fields.v_mobile_number" data-error-message="Parent's Mobile Number" name="v_mobile_number" class="form-control required"/>
+                                        </div>
                                     </div>
                                 </div>
-                                
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Parent's Whatsapp Number</label>
+                                    <div class="col-md-4">
+										<div class="input-group">
+											<span class="input-group-addon">
+											<i class="">+91</i>
+											</span>
+											<input type="text" ng-enter ng-model="edit_fields.v_whatsapp_number" data-error-message="Whatsapp Number" name="v_whatsapp_number" class="form-control"/>
+										</div>
+									</div>
+                                </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Nick Name</label>
                                     <div class="col-md-4">

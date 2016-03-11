@@ -15,6 +15,9 @@ class Exam extends Model{
     public function batches(){
         return $this->belongsTo('App\Models\Batch','i_batch_id');
     }
+    public function subjects(){
+        return $this->belongsTo('App\Models\Subject','i_subject_id')->select('id','v_subject_name');
+    }
     
     public function delete() {
         return parent::delete();

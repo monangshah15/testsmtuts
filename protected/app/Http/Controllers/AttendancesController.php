@@ -2,10 +2,7 @@
 namespace App\Http\Controllers;
 
 use Session, Input, Auth, Hash, Excel, DB;
-use App\Models\Batch;
-use App\Models\Exam;
-use App\Models\Student;
-use App\Models\Attendance;
+use App\Models\Batch, App\Models\Attendance, App\Models\Subject, App\Models\Student, App\Models\Exam, App\Models\SmsLog;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 class AttendancesController extends Controller 
@@ -204,7 +201,12 @@ class AttendancesController extends Controller
         $this->dynamic_db_connection($companyData);
 	    $data = Input::get();
         if(!empty($data) && isset($data['i_student_ids'])){
-            $students = Student::where('e_status','Active')->where('i_batch_id',$data['i_batch_id'])->select('id', DB::raw('CONCAT(v_first_Name, " ", v_last_Name) AS v_student_name'))->orderBy('v_student_name','ASC')->get();
+            $students = Student::where('e_status','Active')->where('i_batch_id',$data['i_batch_id'])->select('id', DB::raw('CONCAT(v_first_Name, " ", v_last_Name) AS v_student_name, v_mobile_number, v_whatsapp_number, e_sms_type'))->orderBy('v_student_name','ASC')->get();
+            $sendMsg = '';
+            $strTemplate = $data['v_template_content'];
+            $strTemplate = str_replace('[DATE]',date("d-m-Y"),$strTemplate);
+            $strTemplate = str_replace('[SIGNATURE]',$companyData->v_user_signature,$strTemplate);
+            
             foreach($students as $key=> $val)
             {
                 $record = Attendance::where('i_batch_id',$data['i_batch_id'])->where('i_student_id',$val->id)->where('d_date',date("Y-m-d",strtotime($data['d_date'])))->first();
@@ -216,15 +218,31 @@ class AttendancesController extends Controller
                 $record->i_batch_id = $data['i_batch_id'];
                 $record->i_template_id = $data['i_template_id'];
                 if(in_array($val->id,$data['i_student_ids'])){
-                    $record->e_status = 'Present';
-                } else {
                     $record->e_status = 'Absent';
+                    $sendMsg = True;
+                } else {
+                    $record->e_status = 'Present';
+                    $sendMsg = False;
                 }                   
                 $record->e_send_message = 'Yes';
                 $record->d_date = date("Y-m-d",strtotime($data['d_date']));
                 $record->created_at = date("Y-m-d H:i:s");
                 $record->updated_at = date("Y-m-d H:i:s");
                 $record->save();
+            
+                if($sendMsg)
+                {
+                    $smsLog = new SmsLog;
+                    $smsLog->i_user_id = $companyData->id;      
+                    $smsLog->i_student_id = $val->id;
+                    $smsLog->v_phone_number = $val->v_mobile_number;
+                    $smsLog->v_whatsapp_number = $val->v_whatsapp_number;
+                    $smsLog->v_message = $strTemplate;
+                    $smsLog->e_sms_type = $val->e_sms_type == 'Whatsapp'? $val->e_sms_type:$companyData->e_messages_type;
+                    $smsLog->d_registration_date = date('Y-m-d',strtotime($companyData->d_registration_date));
+                    $smsLog->created_at = date("Y-m-d H:i:s");
+                    $smsLog->save();    
+                }
             }
             return 'TRUE';
         }

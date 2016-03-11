@@ -555,20 +555,6 @@ app.controller('UsersController', function($rootScope, $scope, $http, $timeout, 
 app.controller('AddUsersController', function($rootScope, $scope, $http, $timeout, PaginationService, GLOBAL, mySharedService, $filter, $state, $stateParams) {
     $rootScope.add_fields = {};
     $rootScope.user_permission = '';
-    var responsePromise = $http.post(GLOBAL.API_URL+"users/check-auth-permission");
-    responsePromise.success(function(data, status1, headers, config) 
-    {
-        if(data == "" || data == undefined)
-        {
-            GLOBAL.checkId = false;
-            GLOBAL.checkUserId = false;
-            $state.go('/');
-        }
-        $rootScope.user_permission = data.e_permission_type;
-        console.log($rootScope.user_permission);
-    });
-    
-    
     $rootScope.submit_frm_add = function(add_fields, button_pressed){
         
         if(form_valid('#frmAdd',"help-block")){

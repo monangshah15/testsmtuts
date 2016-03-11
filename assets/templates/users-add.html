@@ -5,8 +5,7 @@
     {       
         window.clearTimeout( t );
         t = window.setTimeout( function(){            
-            $('#d_coc_date').datepicker({format: 'dd-mm-yyyy'});
-            $('#d_date').datepicker({format: 'dd-mm-yyyy'});
+            $('#d_registration_date').datepicker({format: 'dd-mm-yyyy'});
         },10);        
     }
 );
@@ -141,7 +140,7 @@
                                 <div class="form-group">
                                     <label class="control-label col-md-3">Company Alias <span class="required"> * </span> </label>
                                     <div class="col-md-4">
-                                        <input type="text" ng-enter ng-model="add_fields.v_company_alias" data-error-message="Company Alias" name="v_company_alias" class="form-control required"/>
+                                        <input type="text" ng-enter ng-model="add_fields.v_company_alias" data-error-message="Company Alias" name="v_company_alias" class="form-control required alpha_num"/>
                                         <span class="duplicate_error temp_hid" id="v_company_alias_duplicate_error">Company alias already exist.</span>
                                     </div>
                                 </div>
@@ -152,16 +151,44 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Regards Name</label>
+                                    <label class="control-label col-md-3">Registration Date<span class="required"> * </span> </label>
                                     <div class="col-md-4">
-                                        <input type="text" ng-enter ng-model="add_fields.v_regards_name" data-error-message="First Name" name="v_regards_name" class="form-control"/>
+                                        <input type="text" ng-enter ng-model="add_fields.d_registration_date" id="d_registration_date" data-error-message="Registration date" name="d_registration_date" class="form-control required"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">Phone Number <span class="required"> * </span> </label>
+                                    <label class="control-label col-md-3">Regards Name</label>
                                     <div class="col-md-4">
-                                        <input type="text" ng-enter ng-model="add_fields.v_phone" data-error-message="Phone Number" name="v_phone" class="form-control required digits"/>
+                                        <input type="text" ng-enter ng-model="add_fields.v_regards_name" data-error-message="Regards Name" name="v_regards_name" class="form-control"/>
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Prize </label>
+                                    <div class="col-md-4">
+                                        <input type="text" ng-enter ng-model="add_fields.f_prize" data-error-message="Prize" name="f_prize" class="form-control number"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Mobile Number <span class="required"> * </span> </label>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+											<span class="input-group-addon">
+											<i class="">+91</i>
+											</span>
+                                            <input type="text" id="phone_number" ng-enter ng-model="add_fields.v_phone" data-error-message="Mobile Number" name="v_phone" class="form-control required"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Whatsapp Number</label>
+                                    <div class="col-md-4">
+										<div class="input-group">
+											<span class="input-group-addon">
+											<i class="">+91</i>
+											</span>
+											<input type="text" id="phone_number" ng-enter ng-model="add_fields.v_whatsapp_number" data-error-message="Whatsapp Number" name="v_whatsapp_number" class="form-control"/>
+										</div>
+									</div>
                                 </div>
                                 <div class="form-group">
 									<label class="control-label col-md-3">Message Type<span class="required"> * </span> </label>
@@ -178,11 +205,11 @@
 									<div class="col-md-4">
 										<select class="form-control bs-select add_i_default_sms_count required select_msg" ng-model="add_fields.i_default_sms_count" name="i_default_sms_count" data-error-message="Message Count">
 											<option value="">Select Total Count</option>
-                                            <option value="100">100</option>
-                                            <option value="200">200</option>
                                             <option value="500">500</option>
                                             <option value="1000">1000</option>
-										</select>
+										    <option value="1500">1500</option>
+                                            <option value="2000">2000</option>
+                                        </select>
 									</div>
 								</div>                               
                                 <div class="form-group">

@@ -283,6 +283,13 @@ function form_valid(form, err_container) {
                 flag = false;
             }
         }
+        if($(this).hasClass('alpha_num') && field_value != "" && field_value !== undefined && field_value != placeholder ) {
+            var pattern = /^[a-zA-Z0-9_]*$/; //space and 0-9 number allow
+            if(!pattern.test(field_value)) {
+                error_msg = 'Please enter alphanumeric value';
+                flag = false;
+            }
+        }
          
         if($(this).hasClass('ckeditor')) {
             if(this.id == 'CkEditor') {                
@@ -339,8 +346,6 @@ function form_valid(form, err_container) {
         if(!flag && error_msg != '') {
             error_msg = err_element_start + error_msg + err_element_end;
             if(err_container != '') {
-                console.log(this.id);
-                //$(err_container).append( error_msg );
                 $(this).closest('div.form-group').addClass('has-error');
                 if($(this).hasClass('ckeditor')) {
                     $(this).next('div').after(error_msg );
@@ -348,6 +353,9 @@ function form_valid(form, err_container) {
                 {
                     $("#customer-label").parent('.form-group').addClass('has-error');
                     $(this).parents('.sales-list label').after( error_msg );
+                } else if(this.id == "phone_number")
+                {
+                    $(this).parents('.input-group').after( error_msg );
                 } else {
                     $(this).after( error_msg );    
                 }
@@ -356,8 +364,6 @@ function form_valid(form, err_container) {
                     $(this).css('border','1px solid #ebccd1');
                 }
             } else {
-                console.log(12);
-                console.log(this.id);
                 if($(this).hasClass('ckeditor')) {
                     $(this).next('div').after(error_msg );
                 } else {
@@ -370,10 +376,6 @@ function form_valid(form, err_container) {
                         $(this).next().after( error_msg );
                     }
                     else if(this.id == "year")
-                    {
-                        $(this).next().after( error_msg );
-                    }
-                    else if(this.id == "v_social_secutiry_number")
                     {
                         $(this).next().after( error_msg );
                     }

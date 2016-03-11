@@ -41,18 +41,18 @@
 <link href="{{ ADMIN_ASSET_URL }}css/components.css" id="style_components" rel="stylesheet" type="text/css"/>
 <link href="{{ ADMIN_ASSET_URL }}css/plugins.css" rel="stylesheet" type="text/css"/>
 <link href="{{ ADMIN_ASSET_URL }}css/layout.css" rel="stylesheet" type="text/css"/>
-<link href="{{ ADMIN_ASSET_URL }}css/themes/default.css" rel="stylesheet" type="text/css" id="style_color"/>
+<link href="{{ ADMIN_ASSET_URL }}css/default.css" rel="stylesheet" type="text/css" id="style_color"/>
 <link href="{{ ADMIN_ASSET_URL }}css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="{{ SITE_URL }}images/favicon.ico"/>
+<link rel="shortcut icon" href="{{ SITE_URL }}img/favicon.ico"/>
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
 <body class="login">
 <!-- BEGIN LOGO -->
 <div class="logo">
-    <a href="index.html">
-    <img src="{{ SITE_URL }}images/logo.jpg" alt=""/>
+    <a href="{{ SITE_URL }}">
+    <img src="{{ SITE_URL }}img/logo.jpg" alt=""/>
     </a>
 </div>
 <!-- END LOGO -->

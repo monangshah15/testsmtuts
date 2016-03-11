@@ -176,7 +176,7 @@ class SubjectsController extends Controller
             $record = new Subject;
             $record->i_user_id = Auth::user()->id;
             $record->v_subject_name = $data['v_subject_name'];
-            $record->e_status = $data['e_status'];
+            $record->e_status = 'Active';
             $record->created_at = date("Y-m-d H:i:s");
             $record->updated_at = date("Y-m-d H:i:s");
             if($record->save()){
@@ -196,7 +196,7 @@ class SubjectsController extends Controller
             $record = Subject::find($data['id']);
             $record->i_user_id = Auth::user()->id;
             $record->v_subject_name = $data['v_subject_name'];
-            $record->e_status = $data['e_status'];
+            //$record->e_status = $data['e_status'];
             $record->updated_at = date("Y-m-d H:i:s");
             if($record->save()){
                 return 'TRUE';

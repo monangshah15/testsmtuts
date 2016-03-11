@@ -11,7 +11,7 @@
             <div class="portlet">
 				<div class="portlet-title">
 					<div class="caption">
-						<i class="icon-plus"></i>Students
+						<i class="fa fa-users"></i>Students
 					</div>
 					<div class="actions">
 						<a class="btn default green-haze-stripe" href="{{GLOBAL.SITE_URL+'students/add'}}"><i class="fa fa-plus"></i> <span class="hidden-480" > Add Student </span> </a>
@@ -72,15 +72,19 @@
                             <th width="20%" ng-class="order_field != 'v_first_name' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_first_name')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
 								Name
 							</th>
+                            <th width="20%" ng-class="order_field != 'v_nick_name' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_nick_name')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
+								Nick Name
+							</th>
                             <th width="20%" ng-class="order_field != 'v_batch_title' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_batch_title')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
 								Batch Name
 							</th>
                             <th width="12%" ng-class="order_field != 'v_school_name' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_school_name')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
                                 School Name
                             </th>
-                            <th width="12%" ng-class="order_field != 'v_mobile_number' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_mobile_number')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
+                            <!--<th width="12%" ng-class="order_field != 'v_mobile_number' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('v_mobile_number')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1">
                                 Parent's Mobile Number
                             </th>
+                            -->
                             <th width="13%" ng-class="order_field != 'e_status' ? 'sorting' : sort_order == 'desc' ? 'sorting_desc': 'sorting_asc'" ng-click="order_by_name('e_status')" class="sorting" tabindex="0" aria-controls="datatable_ajax" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending">
 								 Status
 							</th>
@@ -97,6 +101,9 @@
 								<input type="text" name="page_name" ng-model="fields.v_name" class="form-control form-filter input-sm">
 							</td>
                             <td rowspan="1" colspan="1">
+								<input type="text" name="page_name" ng-model="fields.v_nick_name" class="form-control form-filter input-sm">
+							</td>
+                            <td rowspan="1" colspan="1">
                                 <select class="form-control form-filter input-sm" name="i_batch_id" ng-model="fields.i_batch_id" ng-selected="fields.i_batch_id">
 									<option value="">Select...</option>
 							        <option ng-repeat="(key, value) in all_common_list_data.batches_list" value="{{key}}" ng-selected="fields.i_batch_id == key">{{ value }}</option>
@@ -108,9 +115,9 @@
 							        <option ng-repeat="(key, value) in all_common_list_data.schools_list" value="{{key}}" ng-selected="fields.i_school_id == key">{{ value }}</option>
 								</select>
                             </td>
-                            <td rowspan="1" colspan="1">
+                            <!--<td rowspan="1" colspan="1">
                                 <input type="text" name="page_name" name="v_mobile_number" ng-model="fields.v_mobile_number" class="form-control form-filter input-sm">
-                            </td>
+                            </td>-->
                             <td rowspan="1" colspan="1">
 								<select class="form-control form-filter input-sm" name="e_status" ng-model="fields.e_status" >
 									<option value="">Select...</option>
@@ -134,9 +141,9 @@
                                   <input type="checkbox"  ng-model="selected_record[item.id]"  ng-click="enable_button()"   class="checkboxes" value="1" />
                                 </td>
                                 <td>{{ item.v_first_name+&nbsp;+item.v_last_name }}</td>                               
+                                <td>{{ item.v_nick_name}}</td>
                                 <td>{{ item.v_batch_name }}</td>
                                 <td>{{ item.v_school_name }}</td>
-                                <td>{{ item.v_mobile_number}}</td>
                                 <td style="text-align: center;">
                                     <input bootstrap-switch type="checkbox" data-size="small" class="make-switch ng-hide" ng-if="item.e_status == 'Active'" data-off-text="&nbsp;Inactive&nbsp;" data-on-text="&nbsp;&nbsp;Active&nbsp;&nbsp;" url="{{ GLOBAL.API_USER_URL }}students/change-status" rowkey="{{ item.id }}" data-on-color="success" data-off-color="danger" checked>
                                     <input bootstrap-switch type="checkbox" data-size="small" class="make-switch ng-hide" ng-if="item.e_status == 'Inactive'" data-off-text="&nbsp;Inactive&nbsp;" data-on-text="&nbsp;&nbsp;Active&nbsp;&nbsp;" url="{{ GLOBAL.API_USER_URL }}students/change-status" rowkey="{{ item.id }}" data-on-color="success" data-off-color="danger" />

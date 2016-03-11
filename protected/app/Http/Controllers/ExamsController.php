@@ -221,7 +221,7 @@ class ExamsController extends Controller
             $record->v_title = $data['v_title'];
             $record->i_total_marks = $data['i_total_marks'];
             $record->d_date = date("Y-m-d H:i:s",strtotime($data['d_date']));
-            $record->e_status = $data['e_status'];
+            $record->e_status = 'Active';
             $record->created_at = date("Y-m-d H:i:s");
             $record->updated_at = date("Y-m-d H:i:s");
             if($record->save()){

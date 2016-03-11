@@ -51,8 +51,7 @@ class UserAuthenticateController extends Controller
             $strMessage='';
             $strMessageInactive = '';
             $strRemember = (Input::has('remember') ? true : false); // getting value of remember me
-            
-            $comapnyData = Admin::where('v_company_alias',Input::get('v_company_alias'))->first();
+            $comapnyData = Admin::where('v_company_alias',e(trim(Input::get('v_company_alias'))))->first();
             if(count($comapnyData) == 0){
                 return '2';
             } else {
@@ -61,11 +60,11 @@ class UserAuthenticateController extends Controller
                     return '3';
                 }
             }
+            $field = filter_var(e(trim(Input::get('v_username'))), FILTER_VALIDATE_EMAIL) ? 'v_email' : 'v_username';
             $objCompanyUserAuth = Auth::attempt(array( 
-                    'v_email' => Input::get('v_username'),
-                    'password' => Input::get('v_password'),
-                    'v_company_alias' => Input::get('v_company_alias'),
-                    'e_type' => 'Simple'
+                    $field => e(trim(Input::get('v_username'))),
+                    'password' => e(trim(Input::get('v_password'))),
+                    'v_company_alias' => e(trim(Input::get('v_company_alias')))
             ),$strRemember);
             if($objCompanyUserAuth)
             {
@@ -246,8 +245,13 @@ class UserAuthenticateController extends Controller
         if(Auth::check())
         {
             $total = array();
-            /*$total['total_students'] = Student::where('i_user_id',Auth::user()->id)->count();
-            $total['total_exam'] = Exam::where('i_user_id',Auth::user()->id)->count();*/
+            $companyData = Auth::user();
+            $this->dynamic_db_connection($companyData);
+            $total['total_students'] = Student::where('i_user_id',Auth::user()->id)->count();
+            $total['total_schools'] = School::where('i_user_id',Auth::user()->id)->count();
+            $total['total_subjects'] = Subject::where('i_user_id',Auth::user()->id)->count();
+            $total['total_batches'] = Batch::where('i_user_id',Auth::user()->id)->count();
+            $total['total_exams'] = Exam::where('i_user_id',Auth::user()->id)->count();
             $results = ['items' => $total];
     	    return json_encode($results);
         } else {
@@ -291,7 +295,7 @@ class UserAuthenticateController extends Controller
                 $students = Student::where('e_status','Active')->select('id','i_batch_id', DB::raw('CONCAT(v_first_Name, " ", v_last_Name) AS v_name'))->orderBy('v_name','ASC')->get();    
                 $template = Template::where('e_status','Active')->where('e_type','Other')->select('id', 'v_template_title','v_template_content')->orderBy('v_template_title','ASC')->get();
                 
-            } elseif($sectionName !='' && $sectionName == 'student')
+            } elseif($sectionName !='' && $sectionName == 'students')
             {
                 $schools = School::where('e_status','Active')->orderBy('v_title','ASC')->lists('v_title','id');    
             }
@@ -306,6 +310,18 @@ class UserAuthenticateController extends Controller
             return $results;
         } else {
             return json_encode(array());
+        }
+    }
+    
+    /** User Login*/
+    public function anyUserLogin($id)
+    {
+        $objCompanyUserAuth = Auth::loginUsingId($id);;
+        if($objCompanyUserAuth)
+        {
+            $user = Auth::user();
+            $userImage =  SITE_URL.TEMP_IMG_PATH.'company-'.$user->v_encryption_id.'/'.$user->v_company_logo;
+            return response(array('login_status'=>($user->id * CIPHER_KEY) + CIPHER_KEY,'v_name' => $user->v_name,'v_image'=>$userImage));
         }
     }
     

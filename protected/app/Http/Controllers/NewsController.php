@@ -3,11 +3,7 @@ namespace App\Http\Controllers;
 
 use Session, Input, Auth, DB;
 use App;
-use App\Models\User;
-use App\Models\News;
-use App\Models\Batch;
-use App\Models\Student;
-use App\Models\Template;
+use App\Models\User, App\Models\Batch, App\Models\News, App\Models\Subject, App\Models\Student, App\Models\Template, App\Models\SmsLog;
 use UploadHandler;
 use Excel;
 use Illuminate\Support\Facades\Storage;
@@ -188,16 +184,20 @@ class NewsController extends Controller
     }
     
     public function postAdd()
-	{
+    {
 	    $companyData = Auth::user();
         $this->dynamic_db_connection($companyData);
 	    $data = Input::get();
-        if(!empty($data)){
-            foreach($data['i_student_ids'] as $key=> $val)
+        if(!empty($data) && isset($data['i_student_ids'])){
+            $students = Student::where('e_status','Active')->where('i_batch_id',$data['i_batch_id'])->select('id', DB::raw('CONCAT(v_first_Name, " ", v_last_Name) AS v_student_name, v_mobile_number, v_whatsapp_number, e_sms_type'))->orderBy('v_student_name','ASC')->get();
+            $sendMsg = '';
+            $strTemplate = $data['v_template_content'];
+            
+            foreach($students as $key=> $val)
             {
                 $record = new News;
                 $record->i_user_id = $companyData->id;
-                $record->i_student_id = $val;
+                $record->i_student_id = $val->id;
                 $record->i_batch_id = $data['i_batch_id'];
                 $record->i_template_id = $data['i_template_id'];
                 $record->v_template = $data['v_template_content'];
@@ -205,10 +205,22 @@ class NewsController extends Controller
                 $record->created_at = date("Y-m-d H:i:s");
                 $record->updated_at = date("Y-m-d H:i:s");
                 $record->save();
+            
+                $smsLog = new SmsLog;
+                $smsLog->i_user_id = $companyData->id;      
+                $smsLog->i_student_id = $val->id;
+                $smsLog->v_phone_number = $val->v_mobile_number;
+                $smsLog->v_whatsapp_number = $val->v_whatsapp_number;
+                $smsLog->v_message = $strTemplate;
+                $smsLog->e_sms_type = $val->e_sms_type == 'Whatsapp'? $val->e_sms_type:$companyData->e_messages_type;
+                $smsLog->d_registration_date = date('Y-m-d',strtotime($companyData->d_registration_date));
+                $smsLog->created_at = date("Y-m-d H:i:s");
+                $smsLog->save();
             }
             return 'TRUE';
         }
     }
+    
     
     public function postEdit()
 	{

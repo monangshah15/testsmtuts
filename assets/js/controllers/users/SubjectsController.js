@@ -44,8 +44,6 @@ app.controller('SubjectsController', function($rootScope, $scope, $http, $timeou
         if(fields != undefined)
         {
             $rootScope.search_fields = fields;
-            //$rootScope.search_fields['order_field'] = $rootScope.order_field;
-            //$rootScope.search_fields['sort_order'] = $rootScope.sort_order;
         }
         
         if($rootScope.search_fields == undefined){
@@ -66,31 +64,6 @@ app.controller('SubjectsController', function($rootScope, $scope, $http, $timeou
         $('.dropzone').show();
     }
     
-    $rootScope.submit_frm_add = function(add_fields, button_pressed){
-        
-        if(form_valid('#frmAdd',"help-block")){
-            //Call submit data services
-            if(button_pressed == 'New'){
-                PaginationService.submit_add_form_data(GLOBAL.API_USER_URL+"subjects/add", add_fields);
-            } else {
-                PaginationService.submit_add_form_data(GLOBAL.API_USER_URL+"subjects/add", add_fields, '/subjects');
-            }
-            
-           $rootScope.success_msg = 'Record Added successfully';
-            // To clear form elements
-            setTimeout(function(){
-                angular.element('.alert-success').fadeIn(1000);
-                angular.element('.alert-success').fadeOut(2000);
-                angular.element('.select2me').select2('val', '');
-                angular.element('#cpassword').val('');
-                angular.element('.alert').hide();
-            },500);
-        } else {           
-            return false;
-        }                
-    }
-    /* End add form */
-    
     /* Begin edit form */
     $rootScope.loadEditData = function(item){
         $rootScope.edit_fields = item;
@@ -107,20 +80,6 @@ app.controller('SubjectsController', function($rootScope, $scope, $http, $timeou
         $("#frmEdit .form-group").removeClass('has-error');
         $("#frmEdit .required").removeAttr('style');
         $("#frmEdit .help-block-error").remove();
-        /*var responsePromise = $http.post(GLOBAL.API_USER_URL+"bacthes/check-auth-permission");
-        responsePromise.success(function(data, status1, headers, config) 
-        {
-            if(data == "" || data == undefined)
-            {
-                GLOBAL.checkId = false;
-                GLOBAL.checkUserId = false;
-                $state.go('/');
-            }
-            $rootScope.user_permission = data.e_permission_type;
-            console.log($rootScope.user_permission);
-        });*/
-        /* Set dropdown values */
-        $scope.edit_fields.e_status = item.e_status;
     }
     
     $rootScope.submit_frm_edit = function(edit_fields){
@@ -490,7 +449,6 @@ app.controller('AddSubjectsController', function($rootScope, $scope, $http, $tim
                 angular.element('.alert-success').fadeIn(1000);
                 angular.element('.alert-success').fadeOut(2000);
                 angular.element('.select2me').select2('val', '');
-                angular.element('#cpassword').val('');
                 angular.element('.alert').hide();
             },500);
         } else {           

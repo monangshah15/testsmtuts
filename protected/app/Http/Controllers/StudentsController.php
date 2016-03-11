@@ -13,7 +13,6 @@ use App\Models\School;
 use UploadHandler;
 class StudentsController extends Controller 
 {
-    /* Job Enquiry for cms listing*/
 	public function postIndex()
 	{
 	       /** We Check in middleware**/
@@ -104,8 +103,12 @@ class StudentsController extends Controller
             $record->v_email = $data['v_email'];
             $record->i_school_id = $data['i_school_id'];
             $record->i_batch_id = $data['i_batch_id'];
+            $record->e_sms_type = $data['e_sms_type'];
             $record->v_parent_name = $data['v_parent_name'];
             $record->v_mobile_number = $data['v_mobile_number'];
+            if(isset($data['v_whatsapp_number']) && $data['v_whatsapp_number']!=''){
+                $record->v_whatsapp_number = $data['v_whatsapp_number'];
+            }
             $record->v_nick_name = isset($data['v_nick_name']) ? $data['v_nick_name']: '';
             $record->v_address = $data['v_address'];
             $record->e_status = $data['e_status'];
@@ -145,8 +148,12 @@ class StudentsController extends Controller
             $record->v_email = $data['v_email'];
             $record->i_school_id = $data['i_school_id'];
             $record->i_batch_id = $data['i_batch_id'];
+            $record->e_sms_type = $data['e_sms_type'];
             $record->v_parent_name = $data['v_parent_name'];
             $record->v_mobile_number = $data['v_mobile_number'];
+            if(isset($data['v_whatsapp_number']) && $data['v_whatsapp_number']!=''){
+                $record->v_whatsapp_number = $data['v_whatsapp_number'];
+            }
             $record->v_nick_name = isset($data['v_nick_name']) ? $data['v_nick_name']: '';
             $record->v_address = $data['v_address'];
             $record->e_status = $data['e_status'];
@@ -198,80 +205,73 @@ class StudentsController extends Controller
             $excel->sheet('Student'  , function($sheet) use ($parameters)
             {
                 $query = Student::query();
+            
+                $sort = 'id';
+                $order = 'ASC';
                 
-                if($parameters != null && trim($parameters) != '""'){             
-                    $reqestData = json_decode($parameters, true);
-                    if(isset($reqestData)){
-                        foreach($reqestData as $key => $val) { if($key != 'search_fields'){ $$key = trim($val); } }   
-                    }
-                    
-                    $sort = 'id';
-                    $order = 'ASC';
-                    
-                    if(isset($data['search_fields']['v_name']) && $data['search_fields']['v_name']!=""){
-                    	$query = $query->where('v_first_name', 'LIKE',"%".$data['search_fields']['v_name']."%");
-                    }
-                    
-                    if(isset($data['search_fields']['i_batch_id']) && $data['search_fields']['i_batch_id']!=""){
-                    	$query = $query->where('i_batch_id',$data['i_batch_id']);
-                    }
-                    if(isset($data['search_fields']['i_school_id']) && $data['search_fields']['i_school_id']!=""){
-                    	$query = $query->where('i_school_id',$data['i_school_id']);
-                    }
-                    
-                    if(isset($data['search_fields']['v_email']) && $data['search_fields']['v_email']!=""){
-                    	$query = $query->where('v_email', 'LIKE',"%".$data['search_fields']['v_email']."%");
-                    }
-                    
-                    $query = $query->select('id','v_first_name','v_last_name','v_email','i_school_id', '', '', '', '', '', '', '');
-                    $records = $query->get()->toArray();
-                    
-                    $field['no'] = 'Sr.No';
-                    $field['v_first_name'] = 'First Name';
-                    $field['v_last_name'] = 'Last Name';
-                    $field['v_email'] = 'Email';
-                    $field['i_school_id'] = 'School Name';
-                    $field['i_batch_id'] = 'Batch Name';
-                    $field['v_parent_name'] = 'Parent Name';
-                    $field['v_mobile_number'] = 'Mobile Number';
-                    $field['v_nick_name'] = 'Nick Name';
-                    $field['v_address'] = 'Address';
-                    $field['e_status'] = 'Status';
-                    $field['created_at'] = 'Date Of Enquiry ';
-                                           
-                    $sheet->setHeight(1, 30);
-                    $sheet->mergeCells('A1:L1');
-                    $sheet->setWidth(array('A' => 8,'B' => 20,'C' => 20,'D' => 30,'E' => 30,'F' => 30,'G' => 30,'H' => 30, 'I' => 30,'J' => 30,'K' => 30,'L' => 30));
-                    
-                    $sheet->cells('A1:L1', function($cell)
-                    {
-                        $cell->setAlignment('center');
-                        $cell->setValignment('middle');
-                        $cell->setFontSize('20');
-                        $cell->setFontWeight('bold');
-                    });
-                    
-                    $sheet->row(1,array('Students'));
-                    
-                    $sheet->cells('A2:L2', function($cell)
-                    {
-                        $cell->setAlignment('center');
-                        $cell->setValignment('middle');
-                        $cell->setFontSize('12');
-                        $cell->setFontWeight('bold');
-                    });
-                    
-                    $sheet->row(2,$field);
-                    $intCount = 3;
-                    $schools = Schools::lists('v_title','id');
-                    $batches = Batch::lists('v_batch_title','id');
-                    foreach($records as $val){
-                        $val['i_school_id'] = $schools[$val['i_schools_id']];
-                        $val['i_batch_id'] = $batches[$val['i_batch_id']];
-                        $val['created_at'] = date('d-m-Y',strtotime($val['created_at']));
-                        $sheet->row($intCount, $val);
-                        $intCount++;
-                    }
+                if(isset($data['search_fields']['v_name']) && $data['search_fields']['v_name']!=""){
+                	$query = $query->where('v_first_name', 'LIKE',"%".$data['search_fields']['v_name']."%");
+                }
+                
+                if(isset($data['search_fields']['i_batch_id']) && $data['search_fields']['i_batch_id']!=""){
+                	$query = $query->where('i_batch_id',$data['i_batch_id']);
+                }
+                if(isset($data['search_fields']['i_school_id']) && $data['search_fields']['i_school_id']!=""){
+                	$query = $query->where('i_school_id',$data['i_school_id']);
+                }
+                
+                if(isset($data['search_fields']['v_email']) && $data['search_fields']['v_email']!=""){
+                	$query = $query->where('v_email', 'LIKE',"%".$data['search_fields']['v_email']."%");
+                }
+                
+                $query = $query->select('id', 'v_first_name', 'v_last_name', 'v_email', 'i_school_id', 'i_batch_id', 'v_parent_name', 'v_mobile_number', 'v_whatsapp_number', 'v_nick_name', 'v_address', 'e_status', 'created_at');
+                $records = $query->get()->toArray();
+                $field['no'] = 'Sr.No';
+                $field['v_first_name'] = 'First Name';
+                $field['v_last_name'] = 'Last Name';
+                $field['v_email'] = 'Email';
+                $field['i_school_id'] = 'School Name';
+                $field['i_batch_id'] = 'Batch Name';
+                $field['v_parent_name'] = 'Parent Name';
+                $field['v_mobile_number'] = 'Mobile Number';
+                $field['v_whatsapp_number'] = 'Whatsapp Number';
+                $field['v_nick_name'] = 'Nick Name';
+                $field['v_address'] = 'Address';
+                $field['e_status'] = 'Status';
+                $field['created_at'] = 'Create Date ';
+                                       
+                $sheet->setHeight(1, 30);
+                $sheet->mergeCells('A1:M1');
+                $sheet->setWidth(array('A' => 8,'B' => 20,'C' => 20,'D' => 30,'E' => 30,'F' => 30,'G' => 30,'H' => 30, 'I' => 30,'J' => 30,'K' => 30,'L' => 30,'M'=>30));
+                
+                $sheet->cells('A1:M1', function($cell)
+                {
+                    $cell->setAlignment('center');
+                    $cell->setValignment('middle');
+                    $cell->setFontSize('20');
+                    $cell->setFontWeight('bold');
+                });
+                
+                $sheet->row(1,array('Students'));
+                
+                $sheet->cells('A2:M2', function($cell)
+                {
+                    $cell->setAlignment('center');
+                    $cell->setValignment('middle');
+                    $cell->setFontSize('12');
+                    $cell->setFontWeight('bold');
+                });
+                
+                $sheet->row(2,$field);
+                $intCount = 3;
+                $schools = School::lists('v_title','id');
+                $batches = Batch::lists('v_batch_title','id');
+                foreach($records as $val){
+                    $val['i_school_id'] = isset($schools[$val['i_school_id']]) ? $schools[$val['i_school_id']] : '';
+                    $val['i_batch_id'] = isset($batches[$val['i_batch_id']]) ? $batches[$val['i_batch_id']] : '';
+                    $val['created_at'] = date('d-m-Y',strtotime($val['created_at']));
+                    $sheet->row($intCount, $val);
+                    $intCount++;
                 }
             });
         })->download('xlsx');

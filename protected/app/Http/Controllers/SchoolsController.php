@@ -184,7 +184,7 @@ class SchoolsController extends Controller
             $record = new School;
             $record->i_user_id = $companyData->id;
             $record->v_title = $data['v_title'];
-            $record->e_status = $data['e_status'];
+            $record->e_status = 'Active';
             $record->created_at = date("Y-m-d H:i:s");
             $record->updated_at = date("Y-m-d H:i:s");
             if($record->save()){
@@ -207,7 +207,7 @@ class SchoolsController extends Controller
             $record = School::find($data['id']);
             $record->i_user_id = Auth::user()->id;
             $record->v_title = $data['v_title'];
-            $record->e_status = $data['e_status'];
+            //$record->e_status = $data['e_status'];
             $record->updated_at = date("Y-m-d H:i:s");
             if($record->save()){
                 return 'TRUE';

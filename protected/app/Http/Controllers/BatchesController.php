@@ -185,7 +185,7 @@ class BatchesController extends Controller
             $record = new Batch;
             $record->i_user_id = Auth::user()->id;
             $record->v_batch_title = $data['v_batch_title'];
-            $record->e_status = $data['e_status'];
+            $record->e_status = 'Active';
             $record->created_at = date("Y-m-d H:i:s");
             $record->updated_at = date("Y-m-d H:i:s");
             if($record->save()){
